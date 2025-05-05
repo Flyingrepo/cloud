@@ -11,21 +11,23 @@ gcloud compute instances create my-vm --zone=us-central1-a
 ->create a cloud storage bucket
 gsutil mb -l us-central1 gs://your-bucket-name
 ->write the cloud function code 
+
 mkdir gcs-function
 cd gcs-function
+
 ->create a python file main.py
 import functions_framework
 
 @functions_framework.cloud_event
 def gcs_trigger(cloud_event):
-&quot;&quot;&quot;Triggered by a change in a Cloud Storage bucket.&quot;&quot;&quot;
-data = cloud_event.data
+    """Triggered by a change in a Cloud Storage bucket"""
+    data = cloud_event.data
 
-file_name = data[&quot;name&quot;]
-bucket_name = data[&quot;bucket&quot;]
-size = data.get(&quot;size&quot;, &quot;Unknown size&quot;)
-print(f&quot;File {file_name} uploaded to {bucket_name}, size: {size}
-bytes&quot;)
+    file_name = data["name"]
+    bucket_name = data["bucket"]
+    size = data.get("size", "Unknown size")
+    print(f"File {file_name} uploaded to {bucket_name}, size: {size}
+bytes")
 
 ->create requirements.txt
 vi requirements.txt
@@ -40,12 +42,12 @@ gcloud functions deploy gcs_trigger \
 --source=. \
 --entry-point=gcs_trigger \
 --trigger-event-
-filters=&quot;type=google.cloud.storage.object.v1.finalized&quot; \
---trigger-event-filters=&quot;bucket=your-bucket-name&quot; \ --allow-
+filters="type=google.cloud.storage.object.v1.finalized" \
+--trigger-event-filters="bucket=your-bucket-name" \ --allow-
 unauthenticated
 
 ->test the function
-echo &quot;Hello Cloud Function!&quot; &gt; test.txt
+echo "Hello Cloud Function!"> test.txt
 
 ->execute the command
 gsutil cp test.txt gs://your-bucket-name/
