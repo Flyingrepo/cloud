@@ -1,0 +1,70 @@
+//lab4
+
+->set up project directoy
+your-app/
+├── app.yaml
+├── main.py
+├── requirements.txt
+
+->Write your web application code
+from flask import Flask
+app = Flask(__name__)
+@app.route('/')
+def hello():
+    return 'Hello, World!';
+if __name__ == '__main__':
+    app.run()
+
+->Create a requirements.txt file
+Flask==2.1.0
+
+->Create an app.yaml file
+runtime: python39
+instance_class: F2 # This is an optional field to specify t
+env_variables:
+
+automatic_scaling:
+target_cpu_utilization: 0.65
+min_instances: 1
+max_instances: 10 
+
+->Deploy the application
+gcloud auth login
+gcloud init
+gcloud app deploy 
+
+->Access your application
+gcloud app browse
+
+//lab7
+
+->Enable Pub/Sub API
+gcloud services enable pubsub.googleapis.com
+
+->Create a Pub/Sub Topic
+gcloud pubsub topics create my-topic
+
+->Create a Subscription
+gcloud pubsub subscriptions create my-subscription --
+topic=my-topic
+
+->Publish a Message
+gcloud pubsub topics publish my-topic --
+message=&quot;Hello, Pub/Sub!&quot;
+
+->Receive Messages
+gcloud pubsub subscriptions pull my-subscription --auto-ack
+
+->Simulate Real-Time Messaging
+Run the following commands in two separate terminals:
+Terminal 1: Continuous Subscriber (Listening)
+
+gcloud pubsub subscriptions pull my-subscription --
+auto-ack --limit=10
+
+Terminal 2: Publisher (Sending Messages)
+gcloud pubsub topics publish my-topic --message=&quot;Message 1&quot;
+
+->Clean Up Resources
+gcloud pubsub subscriptions delete my-subscription
+gcloud pubsub topics delete my-topic
