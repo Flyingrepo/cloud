@@ -1,0 +1,30 @@
+->Create a Lambda Function (Python example)
+
+def lambda_handler(event, context):
+    return {
+        "statusCode": 200,
+        "body": "Hello from Lambda!"
+    }
+
+->create a dockerfile
+FROM public.ecr.aws/lambda/python:3.9
+
+# Copy function code
+COPY lambda_function.py .
+
+# Set the CMD to your handler
+CMD ["lambda_function.lambda_handler"]
+
+->find the ip and note down
+ip addr show eth0 
+
+->Build the Docker Image
+docker build -t my-lambda .
+
+->Run the Container Locally
+docker run -p 9000:8080 my-lambda
+
+->Invoke the Function (create anothe instance)
+curl -X POST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}'
+
+(swap that localhost to previous ip addr)
