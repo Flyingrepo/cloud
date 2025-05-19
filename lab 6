@@ -1,0 +1,44 @@
+mkdir DocApp 
+cd DocApp 
+
+=> Create files: app.py and Dockerfile 
+In the shell: 
+vi app.py
+
+from flask import Flask 
+app = Flask(__name__) 
+@app.route('/') 
+def home(): 
+return "Hello Docker!" 
+if __name__ == '__main__': 
+app.run(host='0.0.0.0', port=5000) 
+
+=>Now create the Dockerfile: 
+vi Dockerfile 
+File contents are as follows: 
+FROM python:3.12-slim 
+WORKDIR /app 
+COPY app.py . 
+RUN pip install flask 
+EXPOSE 5000 
+CMD ["python3", "app.py"]
+
+=> Build and Run the Container 
+bash 
+CopyEdit 
+docker build -t flask-webapp . 
+docker run -d -p 5000:5000 flask-webapp
+
+
+
+=>If multiple containners are running
+
+ Find running containers 
+docker ps 
+Look for a container that maps 0.0.0.0:5000->5000. 
+Step 2: Stop that container 
+docker stop <container_id> 
+Replace <container_id> with actual container id value (which is displayed once docker ps 
+command is executed) without angular brackets. 
+Then re-run your container: 
+docker run -d -p 5000:5000 flask-webapp
