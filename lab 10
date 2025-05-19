@@ -1,0 +1,47 @@
+1. Sample Project Structure 
+myapp/ 
+├── app.py 
+├── Dockerfile 
+├── requirements.txt 
+└── deploy.sh 
+
+=> 
+(vi Dockerfile) 
+FROM python:3.10-slim 
+WORKDIR /app 
+COPY . . 
+RUN pip install -r requirements.txt 
+CMD ["python3", "app.py"]
+
+=>(vi app.py) 
+from flask import Flask 
+app = Flask(__name__) 
+@app.route('/') 
+def hello(): 
+return "Hello from CI/CD automated container!" 
+if __name__ == "__main__": 
+app.run(host="0.0.0.0", port=5000) 
+
+=>(vi requirements.txt) 
+flask 
+
+=>(vi deploy.sh) 
+#!/bin/bash 
+echo " Building Docker image..." 
+docker build -t myapp:latest . 
+echo " Stopping old container (if running)..." 
+docker stop myapp || true 
+docker rm myapp || true 
+echo " Running new container..." 
+docker run -d --name myapp -p 5000:5000 myapp:latest 
+echo " App deployed at:" 
+echo "http://$(hostname -i):5000"
+
+=>Make it executable: 
+chmod +x deploy.sh 
+=>Run: 
+./deploy.sh
+
+=> Access the App 
+If you’re in labs.play-with-docker: 
+● You’ll see a 5000 port badge (click it)
